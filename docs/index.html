@@ -157,6 +157,19 @@ const canonical = (p) => `sealed.v1|${p.customer}|${p.scope}|${p.amountCents}|${
 const hashOf = (p) => keccak256(toUtf8Bytes(canonical(p)));
 
 const hasWallet = () => typeof window.ethereum !== "undefined";
+// The account currently connected to this site (no prompt). null if none.
+async function currentAccount(){
+  if (!hasWallet()) return null;
+  try { const a = await window.ethereum.request({ method:"eth_accounts" }); return a && a[0] ? a[0] : null; }
+  catch { return null; }
+}
+// Force MetaMask to open its account picker so the user can choose which
+// wallet to use for this site — the reliable way to switch to a 2nd account.
+async function pickWallet(){
+  if (!hasWallet()) throw new Error("Install MetaMask first.");
+  try { await window.ethereum.request({ method:"wallet_requestPermissions", params:[{ eth_accounts:{} }] }); }
+  catch { /* user closed the picker — no-op */ }
+}
 async function getSignerContract(){
   if (!hasWallet()) throw new Error("No wallet found. Install MetaMask to continue.");
   const provider = new BrowserProvider(window.ethereum);
@@ -296,10 +309,24 @@ async function renderAccept(payload){
           ? `<button class="btn" disabled>Amount mismatch — can't accept</button>`
           : `<button class="btn brass" id="do-accept">Accept this quote</button>`}
     </div>
-    <p class="note">Sealed with <b>Sealed</b> · verified against Monad testnet.</p>`;
+    <p class="note" id="wallet-note">…</p>`;
 
-  if (oc.accepted) $("#view").onclick = () => window.open(`${EXPLORER}/address/${CONTRACT_ADDRESS}`, "_blank");
-  else if (!tampered) $("#do-accept").onclick = () => onAccept(quoteHash, payload);
+  const wn = $("#wallet-note");
+  if (oc.accepted){
+    $("#view").onclick = () => window.open(`${EXPLORER}/address/${CONTRACT_ADDRESS}`, "_blank");
+    wn.innerHTML = `Sealed with <b>Sealed</b> · verified against Monad testnet.`;
+  } else if (tampered){
+    wn.innerHTML = `Don't accept — this link doesn't match what was sealed onchain.`;
+  } else {
+    $("#do-accept").onclick = () => onAccept(quoteHash, payload);
+    const acct = await currentAccount();
+    const isSealer = acct && acct.toLowerCase() === String(oc.contractor).toLowerCase();
+    wn.innerHTML =
+      `Accepting as <span class="mono">${acct ? short(acct) : "— wallet not connected"}</span> · `
+      + `<a href="#" id="switch-wallet">use a different wallet</a>`
+      + (isSealer ? `<br><b style="color:var(--bad)">⚠ That's the wallet that sealed this quote — switch to the customer's account to accept.</b>` : ``);
+    $("#switch-wallet").onclick = async (e) => { e.preventDefault(); await pickWallet(); renderAccept(payload); };
+  }
 }
 
 async function onAccept(quoteHash, payload){

@@ -115,7 +115,7 @@
 <div class="toast" id="toast"></div>
 
 <script type="module">
-import { BrowserProvider, Contract, keccak256, toUtf8Bytes } from "https://esm.sh/ethers@6.13.4";
+import { BrowserProvider, JsonRpcProvider, Contract, keccak256, toUtf8Bytes } from "https://esm.sh/ethers@6.13.4";
 
 // ---- config ----------------------------------------------------------------
 // Set after deploy (Task: paste the Monad-testnet contract address here).
@@ -192,9 +192,7 @@ function renderSeal(){
       <button class="btn brass" id="do-seal">Seal quote onchain</button>
       <p class="note" id="seal-note">You'll approve one transaction in your wallet. Testnet MON only — no real money.</p>
     </div>`;
-  $("#tab-check").onclick = () => location.search = "";  // check flow lives at ?q=
   $("#do-seal").onclick = onSeal;
-  // "Check a quote" — simple prompt-free switch: reveal a hash box
   $("#tab-check").onclick = renderCheckPrompt;
 }
 
@@ -322,7 +320,6 @@ async function onAccept(quoteHash, payload){
 // Read a quote from chain. Prefers the public RPC (no wallet needed to view);
 // falls back to the injected provider if present.
 async function viewQuote(quoteHash){
-  const { JsonRpcProvider } = await import("https://esm.sh/ethers@6.13.4");
   const provider = new JsonRpcProvider(MONAD.params.rpcUrls[0], MONAD.chainId);
   const c = new Contract(CONTRACT_ADDRESS, ABI, provider);
   const r = await c.getQuote(quoteHash);

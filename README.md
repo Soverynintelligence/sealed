@@ -25,7 +25,7 @@ Nothing is faked: the status you see is read straight from Monad, the accept but
 
 - **Contract:** [`contracts/QuoteSeal.sol`](contracts/QuoteSeal.sol) — `sealQuote`, `acceptQuote`, `getQuote`.
 - **Network:** Monad Testnet (chain ID `10143`).
-- **Address:** `<paste after deploy>`
+- **Address:** [`0x25146c67C0b550306D880a8e00Ec4D7eFDDCF7Cf`](https://testnet.monadexplorer.com/address/0x25146c67C0b550306D880a8e00Ec4D7eFDDCF7Cf)
 
 ## Run it
 

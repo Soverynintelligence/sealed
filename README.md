@@ -32,9 +32,11 @@ Nothing is faked: the status you see is read straight from Monad, the accept but
 The web app is a single static file — no build step.
 
 ```bash
-cd web && python3 -m http.server 8000
+cd docs && python3 -m http.server 8000
 # open http://localhost:8000
 ```
+
+Or just use the hosted version (see below) — no setup.
 
 You need [MetaMask](https://metamask.io) with the Monad testnet added and a little testnet MON from [faucet.monad.xyz](https://faucet.monad.xyz).
 

@@ -33,6 +33,12 @@ Record in a desktop browser with MetaMask. Have **two MetaMask accounts** ready,
 4. **Accept it (1:45–2:20).** Switch MetaMask to **Account 2**. Hit **Accept this quote** → MetaMask → Confirm. It flips to **✓ accepted** and now shows both wallets and both timestamps — read from the chain.
 5. **Close (2:20–2:40).** "Now neither of us can rewrite it. The quote, the amount, the date, and the customer's acceptance are all locked on Monad." Click **View onchain** to end on the explorer.
 
+## What's built vs. what's next (productization)
+
+Built and working today: the contractor seals a quote and the customer accepts — both onchain, both verifiable, tamper-checked against the link.
+
+The one honest gap for real-world use is the **customer's wallet**. Right now the customer needs MetaMask and testnet MON to accept — fine for crypto-native users, but my actual pond customers won't install a wallet, save a seed phrase, and grab tokens just to approve a quote. That friction is a *solved* problem: swap MetaMask for an **embedded / smart wallet** (Coinbase Smart Wallet, Privy, Web3Auth) with **sponsored gas**, and the customer flow becomes *open the link → sign in with email or Face ID → tap Accept* — no seed phrase, no tokens, gas paid behind the scenes. The onchain proof is identical; only the friction disappears. The contractor keeps a normal wallet. That single swap is the whole distance between this demo and something Pat would actually use.
+
 ## Notes for the judges' "no slop / not vaporware" check
 - The Accept button sends a **real** `acceptQuote` transaction; the status shown is read from Monad via a public RPC, not a hardcoded string.
 - The contract **blocks self-accept** — you cannot fake a customer's acceptance from the sealing wallet.

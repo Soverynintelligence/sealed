@@ -47,6 +47,10 @@ You need [MetaMask](https://metamask.io) with the Monad testnet added and a litt
 3. Deploy, confirm in MetaMask, copy the deployed address.
 4. Paste the address into `CONTRACT_ADDRESS` in `web/index.html`.
 
+## Making it real
+
+The one gap for everyday use is the customer's wallet — today they need MetaMask and testnet MON to accept, which my pond customers won't do. That's a solved problem: an **embedded / smart wallet** (Coinbase Smart Wallet, Privy, Web3Auth) with **sponsored gas** turns the customer flow into *open the link → sign in with email or Face ID → tap Accept* — no seed phrase, no tokens. Same onchain proof, none of the friction. That's the single change between this demo and a shippable product.
+
 ## Stack
 
 Solidity · Monad Testnet · [ethers v6](https://docs.ethers.org) · vanilla JS, single-file frontend, no framework.
